@@ -932,6 +932,8 @@ For small $N$ (mesons, baryons, tetraquarks), this is essentially $O(1)$.
 - Cross-set combinations preserve positive definiteness
 - No cancellation errors from alternating signs
 
+**Note on solving the eigenvalue problem:** As the basis size increases, the overlap matrix $S$ may become ill-conditioned due to nearly linearly dependent Gaussians. The generalized eigenvalue problem $H\mathbf{c} = ES\mathbf{c}$ should be solved using eigenvalue truncation to ensure numerical stability. See `algorithm_eigenvalue_truncation.md` for the complete algorithm.
+
 ### 8.3 Advantages
 
 1. **Fully analytical** — no numerical integration

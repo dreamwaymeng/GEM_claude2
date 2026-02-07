@@ -25,6 +25,7 @@ The Gaussian Expansion Method is a variational approach that expands wave functi
 | [`algorithm_spatial_MM.md`](algorithm_spatial_MM.md) | Spatial matrix elements: Jacobi coordinate transformations, width matrix construction, Cholesky factorization algorithm |
 | [`algorithm_discrete_MM.md`](algorithm_discrete_MM.md) | Discrete wave functions: spin/color/isospin construction via eigenvalue method, pairwise operators |
 | [`algorithm_antisymmetrization.md`](algorithm_antisymmetrization.md) | Fermion antisymmetrization: permutation operators, identical particle handling, combined matrix elements |
+| [`algorithm_eigenvalue_truncation.md`](algorithm_eigenvalue_truncation.md) | Eigenvalue truncation: numerical stability for ill-conditioned overlap matrices, threshold selection, diagnostics |
 | [`requirements.md`](requirements.md) | Project requirements and validation targets |
 
 ### Key Features
@@ -83,12 +84,24 @@ Spin, color, and isospin wave functions constructed via:
 
 No Clebsch-Gordan tables required—pure linear algebra.
 
+### Eigenvalue Truncation for Numerical Stability
+
+For large non-orthogonal basis sets, the overlap matrix becomes ill-conditioned. The eigenvalue truncation method:
+
+1. Diagonalizes the overlap matrix
+2. Removes near-null space directions (eigenvalues below threshold)
+3. Transforms to orthonormal basis in the reduced space
+4. Solves a standard (not generalized) eigenvalue problem
+
+This ensures numerical stability while preserving the variational principle.
+
 ## Getting Started
 
 1. Review [`physics.md`](physics.md) for the theoretical foundation
 2. Study [`algorithm_spatial_MM.md`](algorithm_spatial_MM.md) for spatial matrix elements
 3. Study [`algorithm_discrete_MM.md`](algorithm_discrete_MM.md) for discrete wave functions
 4. See [`algorithm_antisymmetrization.md`](algorithm_antisymmetrization.md) for identical fermion handling
+5. See [`algorithm_eigenvalue_truncation.md`](algorithm_eigenvalue_truncation.md) for solving ill-conditioned eigenvalue problems
 
 ## Validation Targets
 
