@@ -613,6 +613,21 @@ $$
 
 where the "modified" overlap uses widths adjusted for the kinetic term.
 
+**Remark (Cross-Set Kinetic Energy via Cholesky):** For cross-set matrix elements where bra is in set $\alpha$ and ket is in set $\beta$, the same Cholesky framework applies. Using integration by parts, $\langle \Phi | (-\nabla_k^2) | \Phi' \rangle = \int (\nabla_k \Phi) \cdot (\nabla_k \Phi') \, d\rho$, the general formula becomes:
+
+$$
+\langle \Phi | T | \Phi' \rangle = \sum_{k} \frac{\hbar^2}{2\mu_k} \cdot 6 \left[\mathbf{D}_{bra} \mathbf{W}^{-1} \mathbf{W}_{ket}\right]_{kk} \cdot S
+$$
+
+where:
+- $\mathbf{D}_{bra}$ is the diagonal width matrix of the bra
+- $\mathbf{W}_{ket} = (\mathbf{T}^{-1})^T \mathbf{D}_{ket} \mathbf{T}^{-1}$ is the transformed ket width matrix
+- $\mathbf{W} = \mathbf{D}_{bra} + \mathbf{W}_{ket}$ is the combined width matrix
+- $\mathbf{W}^{-1} = \mathbf{L}^{-T} \mathbf{L}^{-1}$ is computed from the Cholesky factor $\mathbf{L}$
+- $S$ is the overlap integral
+
+For the same-set case where $\mathbf{W}_{ket} = \mathbf{D}_{ket}$ is diagonal, this reduces to $[\mathbf{D}_{bra} \mathbf{W}^{-1} \mathbf{D}_{ket}]_{kk} = \nu_k \nu'_k / (\nu_k + \nu'_k)$, recovering the formula above.
+
 ---
 
 ## 6. Algorithm Pseudocode
@@ -908,6 +923,142 @@ $$
 $$
 
 where $I_V = 2\pi l_{11}$ for Coulomb, $2\pi/l_{11}$ for linear, etc.
+
+---
+
+## 7.5 Worked Example: 4-Body (Tetraquark)
+
+Consider a tetraquark system with particles 1, 2, 3, 4 having masses $m_1, m_2, m_3, m_4$. We demonstrate the transformation matrix derivation for two common Jacobi tree structures.
+
+### 7.5.1 Jacobi Tree Structures for 4-Body
+
+**H-type tree:** `((1,2),(3,4))`
+
+$$
+\boldsymbol{\rho}_1 = \mathbf{r}_1 - \mathbf{r}_2, \quad
+\boldsymbol{\rho}_2 = \mathbf{r}_3 - \mathbf{r}_4, \quad
+\boldsymbol{\rho}_3 = \frac{m_1\mathbf{r}_1 + m_2\mathbf{r}_2}{M_{12}} - \frac{m_3\mathbf{r}_3 + m_4\mathbf{r}_4}{M_{34}}
+$$
+
+Reduced masses:
+
+$$
+\mu_1 = \frac{m_1 m_2}{M_{12}}, \quad \mu_2 = \frac{m_3 m_4}{M_{34}}, \quad \mu_3 = \frac{M_{12} M_{34}}{M}
+$$
+
+where $M_{12} = m_1 + m_2$, $M_{34} = m_3 + m_4$, $M = m_1 + m_2 + m_3 + m_4$.
+
+**Chain tree:** `(((1,2),3),4)`
+
+$$
+\boldsymbol{\rho}_1 = \mathbf{r}_1 - \mathbf{r}_2, \quad
+\boldsymbol{\rho}_2 = \frac{m_1\mathbf{r}_1 + m_2\mathbf{r}_2}{M_{12}} - \mathbf{r}_3, \quad
+\boldsymbol{\rho}_3 = \frac{m_1\mathbf{r}_1 + m_2\mathbf{r}_2 + m_3\mathbf{r}_3}{M_{123}} - \mathbf{r}_4
+$$
+
+### 7.5.2 Diagonal Pairs for Each Tree
+
+| Tree | Diagonal Pairs |
+|------|----------------|
+| `((1,2),(3,4))` H-type | (1,2) via $\rho_1$, (3,4) via $\rho_2$ |
+| `(((1,2),3),4)` Chain | (1,2) via $\rho_1$ |
+
+For pair (1,3) in either tree, it is non-diagonal and requires transformation to a tree where (1,3) is diagonal, such as `(((1,3),2),4)`.
+
+### 7.5.3 Transformation Matrix: H-type to (13)-diagonal
+
+Transform from `((1,2),(3,4))` to `(((1,3),2),4)` for computing $V_{13}$.
+
+**Step 1: Particle positions in H-type coordinates**
+
+$$
+\mathbf{r}_1 = \mathbf{R}_{CM} + \frac{m_2}{M_{12}}\boldsymbol{\rho}_1 + \frac{M_{34}}{M}\boldsymbol{\rho}_3
+$$
+$$
+\mathbf{r}_2 = \mathbf{R}_{CM} - \frac{m_1}{M_{12}}\boldsymbol{\rho}_1 + \frac{M_{34}}{M}\boldsymbol{\rho}_3
+$$
+$$
+\mathbf{r}_3 = \mathbf{R}_{CM} + \frac{m_4}{M_{34}}\boldsymbol{\rho}_2 - \frac{M_{12}}{M}\boldsymbol{\rho}_3
+$$
+$$
+\mathbf{r}_4 = \mathbf{R}_{CM} - \frac{m_3}{M_{34}}\boldsymbol{\rho}_2 - \frac{M_{12}}{M}\boldsymbol{\rho}_3
+$$
+
+Coefficient matrix $\mathbf{C}_{H}$ (particle positions in terms of Jacobi coords):
+
+$$
+\mathbf{C}_{H} = \begin{pmatrix}
+m_2/M_{12} & 0 & M_{34}/M \\
+-m_1/M_{12} & 0 & M_{34}/M \\
+0 & m_4/M_{34} & -M_{12}/M \\
+0 & -m_3/M_{34} & -M_{12}/M
+\end{pmatrix}
+$$
+
+**Step 2: Jacobi coordinates in target tree `(((1,3),2),4)`**
+
+$$
+\boldsymbol{\rho}'_1 = \mathbf{r}_1 - \mathbf{r}_3, \quad
+\boldsymbol{\rho}'_2 = \frac{m_1\mathbf{r}_1 + m_3\mathbf{r}_3}{M_{13}} - \mathbf{r}_2, \quad
+\boldsymbol{\rho}'_3 = \frac{m_1\mathbf{r}_1 + m_3\mathbf{r}_3 + m_2\mathbf{r}_2}{M_{123}} - \mathbf{r}_4
+$$
+
+Coefficient matrix $\mathbf{A}_{target}$ (Jacobi coords in terms of particle positions):
+
+$$
+\mathbf{A}_{target} = \begin{pmatrix}
+1 & 0 & -1 & 0 \\
+m_1/M_{13} & -1 & m_3/M_{13} & 0 \\
+m_1/M_{123} & m_2/M_{123} & m_3/M_{123} & -1
+\end{pmatrix}
+$$
+
+**Step 3: Compute transformation matrix**
+
+$$
+\mathbf{T}_{H \to (13)} = \mathbf{A}_{target} \cdot \mathbf{C}_{H}
+$$
+
+This is a $3 \times 3$ matrix. For equal masses $m_1 = m_2 = m_3 = m_4 = m$:
+
+$$
+\mathbf{T}_{H \to (13)} = \begin{pmatrix}
+1/2 & -1/2 & 1 \\
+1/4 + 1/2 & 1/4 & 0 \\
+1/4 & 1/4 & -1/2
+\end{pmatrix} = \begin{pmatrix}
+1/2 & -1/2 & 1 \\
+3/4 & 1/4 & 0 \\
+1/4 & 1/4 & -1/2
+\end{pmatrix}
+$$
+
+### 7.5.4 Matrix Element Computation
+
+For $\langle \Phi^{H} | V_{13} | \Phi^{H} \rangle$ with bra and ket both in H-type set:
+
+1. **Target set:** `(((1,3),2),4)` where pair (1,3) is diagonal
+2. **Transform width matrix:**
+   $$\mathbf{W} = (\mathbf{T}^{-1})^T (\mathbf{D}_{bra} + \mathbf{D}_{ket}) \mathbf{T}^{-1}$$
+3. **Cholesky decompose:** $\mathbf{W} = \mathbf{L}\mathbf{L}^T$ (3×3 lower triangular)
+4. **Compute potential integral:** $I_V$ using $l_{11}$
+5. **Assemble:**
+   $$\langle \Phi | V_{13} | \Phi' \rangle = \frac{\mathcal{N}_{bra} \mathcal{N}_{ket} \cdot \pi^{9/2}}{(l_{11} l_{22} l_{33})^3} \cdot I_V$$
+
+### 7.5.5 Number of Jacobi Sets for 4-Body
+
+For 4 particles, there are multiple topologically distinct tree structures:
+
+| Tree Type | Example | Diagonal Pairs |
+|-----------|---------|----------------|
+| H-type | `((1,2),(3,4))` | (1,2), (3,4) |
+| H-type | `((1,3),(2,4))` | (1,3), (2,4) |
+| H-type | `((1,4),(2,3))` | (1,4), (2,3) |
+| Chain | `(((1,2),3),4)` | (1,2) |
+| Chain | `(((1,3),2),4)` | (1,3) |
+| ... | ... | ... |
+
+For a complete tetraquark calculation, include basis functions from multiple Jacobi sets to ensure good variational coverage of all 6 pair interactions.
 
 ---
 
