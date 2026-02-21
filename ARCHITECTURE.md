@@ -2341,8 +2341,8 @@ EigenResult run_calculation(const Config& config) {
 ## 15. Verification Plan
 
 1. **Unit tests**: Each module independently (Catch2)
-2. **Meson validation**: π (138 MeV), ρ (775 MeV), J/ψ (3097 MeV)
-3. **Baryon validation**: p (938 MeV), Δ (1232 MeV)
+2. **Meson validation**: See [`benchmark_AL1.md`](benchmark_AL1.md) Section 2 (tolerance < 1 MeV)
+3. **Tetraquark validation**: See [`benchmark_AL1.md`](benchmark_AL1.md) Section 3 (tolerance < 1 MeV)
 4. **Numerical checks**:
    - Hermiticity: `||H - H^T|| < 10^-14`
    - Orthonormality: `||X^T S X - I|| < 10^-10`

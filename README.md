@@ -45,6 +45,7 @@ The Gaussian Expansion Method is a variational approach that expands wave functi
 | [`algorithm_antisymmetrization.md`](algorithm_antisymmetrization.md) | Fermion antisymmetrization: permutation operators, identical particle handling |
 | [`algorithm_eigenvalue_truncation.md`](algorithm_eigenvalue_truncation.md) | Numerical stability: eigenvalue truncation for ill-conditioned overlap matrices |
 | [`requirements.md`](requirements.md) | Project requirements and validation targets |
+| [`benchmark_AL1.md`](benchmark_AL1.md) | **AL1 benchmark values** from arXiv:2310.13354 (tolerance < 1 MeV) |
 
 ### Key Features
 
@@ -146,9 +147,11 @@ Ensures numerical stability while preserving the variational principle.
 
 ## Validation Targets
 
-- Meson masses: π (138 MeV), ρ (775 MeV), J/ψ (3097 MeV)
-- Baryon masses: p (938 MeV), Δ (1232 MeV)
-- Tetraquark and pentaquark comparison with literature
+All numerical results are validated against [`benchmark_AL1.md`](benchmark_AL1.md) (arXiv:2310.13354) with tolerance < 1 MeV:
+
+- Meson masses: π (138.16 MeV), ρ (767.00 MeV), J/ψ (3101.3 MeV), Υ (9461.5 MeV)
+- Tetraquark binding: T_cc (-14.0 MeV), T_bb (-151.6 MeV)
+- Hyperfine splittings: ρ-π (628.84 MeV), J/ψ-η_c (96.0 MeV)
 
 ## References
 

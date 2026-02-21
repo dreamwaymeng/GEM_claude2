@@ -31,7 +31,8 @@ General framework using the Gaussian Expansion Method (GEM) for hadron calculati
 
 ## Validation
 
-- [ ] Meson masses (π, ρ, J/ψ)
-- [ ] Baryon masses (p, Δ, Λc)
-- [ ] Tetraquark comparison with literature
-- [ ] Pentaquark comparison with literature
+All validation targets are defined in [`benchmark_AL1.md`](benchmark_AL1.md) with tolerance < 1 MeV.
+
+- [ ] Meson masses: π, ρ, K, K*, D, D*, J/ψ, Υ (see benchmark_AL1.md Section 2)
+- [ ] Tetraquark binding energies: T_cc, T_bb, bc states (see benchmark_AL1.md Section 3)
+- [ ] Hyperfine splittings: ρ-π, J/ψ-η_c (see benchmark_AL1.md Section 2.5)
